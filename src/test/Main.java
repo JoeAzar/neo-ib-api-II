@@ -1,12 +1,17 @@
 package test;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 
 import ch.aonyx.broker.ib.api.CallbackObject;
 import ch.aonyx.broker.ib.api.ClientCallback;
 import ch.aonyx.broker.ib.api.NeoIbApiClient;
 import ch.aonyx.broker.ib.api.NeoIbApiClientException;
 import ch.aonyx.broker.ib.api.Session;
+import ch.aonyx.broker.ib.api.account.AccountUpdateSubscriptionRequest;
+import ch.aonyx.broker.ib.api.account.PortfolioUpdateEvent;
+import ch.aonyx.broker.ib.api.account.PortfolioUpdateEventListener;
 import ch.aonyx.broker.ib.api.contract.Contract;
 import ch.aonyx.broker.ib.api.contract.ContractSpecificationRequest;
 import ch.aonyx.broker.ib.api.contract.SecurityType;
@@ -19,7 +24,7 @@ import ch.aonyx.broker.ib.api.net.ConnectionParameters;
 
 public class Main {
 	public static void main(final String[] args) throws FileNotFoundException {
-		//System.setOut(new PrintStream(new File("test.txt")));
+		System.setOut(new PrintStream(new File("test.txt")));
 		new Main();
 	}
 
@@ -29,10 +34,12 @@ public class Main {
 			@Override
 			public void onSuccess(final Session session) {
 				session.registerListener(new MyCompositeTickEventListener());
-
-				Contract contract = getContract("SPY");
-				session.request(new ContractSpecificationRequest(contract));
-				session.subscribe(new MarketDataSubscriptionRequest(contract));
+				session.registerListener(new MyPortfolioUpdateEventListener());
+				
+//				Contract contract = getContract("SPY");
+//				session.request(new ContractSpecificationRequest(contract));
+//				session.subscribe(new MarketDataSubscriptionRequest(contract));
+				session.subscribe(new AccountUpdateSubscriptionRequest("DU15130"));
 
 				session.start();
 			}
@@ -74,8 +81,15 @@ class MyCompositeTickEventListener implements CompositeTickEventListener {
 
 	@Override
 	public void notify(CompositeTickEvent event) {
-		// TODO Auto-generated method stub
-		System.out.println(event.getTickPriceEvent());
-		System.out.println("here4");
+		System.out.println("here1");
 	}
 }
+
+class MyPortfolioUpdateEventListener implements PortfolioUpdateEventListener {
+
+	@Override
+	public void notify(PortfolioUpdateEvent event) {
+		System.out.println("here2");
+	}
+}
+
