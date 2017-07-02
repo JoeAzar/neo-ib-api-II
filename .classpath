@@ -5,7 +5,7 @@
 	<classpathentry kind="lib" path="commons-lang3-3.1.jar"/>
 	<classpathentry kind="lib" path="logback-classic-1.0.11.jar"/>
 	<classpathentry kind="lib" path="logback-core-1.0.11.jar"/>
-	<classpathentry kind="lib" path="slf4j-api-1.7.5.jar"/>
+	<classpathentry kind="lib" path="slf4j-api-1.7.5.jar" sourcepath="/Users/joeazar/.m2/repository/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5-sources.jar"/>
 	<classpathentry kind="lib" path="guava-22.0.jar"/>
 	<classpathentry kind="lib" path="disruptor-3.3.6.jar"/>
 	<classpathentry kind="lib" path="joda-time-2.9.9.jar"/>
