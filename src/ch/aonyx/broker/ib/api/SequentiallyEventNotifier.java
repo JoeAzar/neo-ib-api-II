@@ -18,6 +18,8 @@ package ch.aonyx.broker.ib.api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import test.Main;
+
 /**
  * @author Christophe Marcourt
  * @since 1.0.0
@@ -32,7 +34,8 @@ final class SequentiallyEventNotifier extends AbstractEventNotifier {
 
     @Override
     void notifyEvent(final EventListener<Event> eventListener, final Event event) {
-        LOGGER.debug("listener '{}' notifies event: {}", eventListener.getClass().getName(), event.toString());
+    	if(Main.DEBUG)
+    		LOGGER.debug("listener '{}' notifies event: {}", eventListener.getClass().getName(), event.toString());
         eventListener.notify(event);
     }
 

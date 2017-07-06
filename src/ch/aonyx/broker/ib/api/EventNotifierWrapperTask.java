@@ -18,6 +18,8 @@ package ch.aonyx.broker.ib.api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import test.Main;
+
 /**
  * @author Christophe Marcourt
  * @since 1.0.0
@@ -35,7 +37,8 @@ final class EventNotifierWrapperTask implements Runnable {
 
     @Override
     public void run() {
-        LOGGER.debug("notify event: {}", event.toString());
+    	if(Main.DEBUG)
+    		LOGGER.debug("notify event: {}", event.toString());
         eventNotifier.notify(event);
     }
 

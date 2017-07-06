@@ -21,6 +21,8 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import test.Main;
+
 /**
  * @author Christophe Marcourt
  * @since 1.0.0
@@ -40,7 +42,8 @@ final class ConcurrentlyEventNotifier extends AbstractEventNotifier {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                LOGGER.debug("listener '{}' notifies event: {}", eventListener.getClass().getName(), event.toString());
+            	if(Main.DEBUG)
+            		LOGGER.debug("listener '{}' notifies event: {}", eventListener.getClass().getName(), event.toString());
                 eventListener.notify(event);
             }
         });

@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import com.lmax.disruptor.RingBuffer;
 
 import ch.aonyx.broker.ib.api.io.EventCreatingConsumer;
+import test.Main;
 
 /**
  * @author Christophe Marcourt
@@ -72,7 +73,8 @@ final class EventInputStreamConsumerThread implements Runnable {
     }
 
     private void publishEvent(final Event event) {
-        LOGGER.debug("dispatch event: {} to disruptor", event.toString());
+    	if(Main.DEBUG)
+    		LOGGER.debug("dispatch event: {} to disruptor", event.toString());
         ringBuffer.publishEvent(eventWrapperTranslator, event);
     }
 
