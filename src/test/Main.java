@@ -8,6 +8,7 @@ import ch.aonyx.broker.ib.api.NeoIbApiClient;
 import ch.aonyx.broker.ib.api.NeoIbApiClientException;
 import ch.aonyx.broker.ib.api.Session;
 import ch.aonyx.broker.ib.api.account.AccountUpdateSubscriptionRequest;
+import ch.aonyx.broker.ib.api.account.ManagedAccountListRequest;
 import ch.aonyx.broker.ib.api.net.ConnectionCallback;
 import ch.aonyx.broker.ib.api.net.ConnectionException;
 import ch.aonyx.broker.ib.api.net.ConnectionParameters;
@@ -29,12 +30,34 @@ public class Main {
 		apiClient.connect(new ConnectionParameters(1), new ConnectionCallback() {
 			@Override
 			public void onSuccess(final Session session) {
-				session.registerListener(new PortfolioListener());
-				session.registerListener(new TradeLogListener(session));
-
-				session.subscribe(new AccountUpdateSubscriptionRequest("DU15207"));
-
+				PortfolioListener pl = new PortfolioListener(session);
+				session.registerListener(pl);
+				
+				TradeLogListener tll = new TradeLogListener(session);
+				session.registerListener(tll);
+				Thread tllt = new Thread(tll);
+				
+				AccListListener all = new AccListListener();
+				session.registerListener(all);
 				session.start();
+				
+				ManagedAccountListRequest r = new ManagedAccountListRequest();
+				session.request(r);
+				
+				//wait for account numbers to populate
+				while(all.accounts.isEmpty()){
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				for (String accnum : all.accounts) {
+					session.subscribe(new AccountUpdateSubscriptionRequest(accnum));
+				}
+				tll.setAccounts(all.accounts);
+				tllt.start();
 			}
 
 			@Override
